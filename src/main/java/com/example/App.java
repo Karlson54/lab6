@@ -69,7 +69,7 @@ public class App {
         return false;
     }
 
-    public void printhall(int hallNumber) {
+    public void printSeatingArrangement(int hallNumber) {
         int updatedHallNumber = hallNumber - 1;
         System.out.println("Seating arrangement in hall " + hallNumber + ":");
         for (int row = 0; row < seats[updatedHallNumber].length; row++) {
@@ -81,12 +81,52 @@ public class App {
         }
     }
 
+    public int[] findBestAvailable(int hallNumber, int numSeats) {
+        int updatedHallNumber = hallNumber - 1;
+        for (int row = 0; row < seats[updatedHallNumber].length; row++) {
+            for (int seat = 0; seat <= seats[updatedHallNumber][row].length - numSeats; seat++) {
+                boolean available = true;
+                for (int i = 0; i < numSeats; i++) {
+                    if (seats[updatedHallNumber][row][seat + i] == 1) {
+                        available = false;
+                        break;
+                    }
+                }
+                if (available) {
+                    System.out.println(
+                            numSeats + " best available seats found in row " + (row + 1) + " in hall " + hallNumber + ".");
+                    return new int[]{row + 1, seat + 1};
+                }
+            }
+        }
+        System.out.println("No best available seats found in hall " + hallNumber + ".");
+        return null;
+    }
+
+    public void autoBook(int hallNumber, int numSeats) {
+        int[] bestAvailable = findBestAvailable(hallNumber, numSeats);
+        if (bestAvailable != null) {
+            int row = bestAvailable[0];
+            int startSeat = bestAvailable[1];
+
+            for (int i = startSeat; i < startSeat + numSeats; i++) {
+                seats[hallNumber - 1][row - 1][i - 1] = 1;
+            }
+
+            System.out.println(
+                    numSeats + " best available seats booked in row " + row + " in hall " + hallNumber + ".");
+        } else {
+            System.out.println("No best available seats booked in hall " + hallNumber + ".");
+        }
+    }
+
     public static void main(String[] args) {
         App cinema = new App();
-        cinema.bookSeats(1, 1, new int[] { 4, 5, 6 });
-        cinema.printhall(1);
+        cinema.bookSeats(1, 5, new int[] { 1, 2, 3 });
+        cinema.printSeatingArrangement(1);
         cinema.checkAvailability(1, 18);
-        cinema.cancelBooking(1, 3, new int[] { 5, 6 });
-        cinema.printhall(1);
+        cinema.cancelBooking(1, 5, new int[] { 1, 2 ,3});
+        cinema.autoBook(1, 3);
+        cinema.printSeatingArrangement(1);
     }
 }
