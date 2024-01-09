@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.Scanner;
+
 public class App {
     private int[][][] seats;
 
@@ -70,16 +72,27 @@ public class App {
     }
 
     public void printSeatingArrangement(int hallNumber) {
+
+        String ANSI_RED = "\u001B[31m";
+        String ANSI_GREEN = "\u001B[32m";
+
         int updatedHallNumber = hallNumber - 1;
         System.out.println("Seating arrangement in hall " + hallNumber + ":");
+    
         for (int row = 0; row < seats[updatedHallNumber].length; row++) {
             System.out.print("Row " + (row + 1) + ": ");
+    
             for (int seat = 0; seat < seats[updatedHallNumber][row].length; seat++) {
-                System.out.print(seats[updatedHallNumber][row][seat] + " ");
+                int seatStatus = seats[updatedHallNumber][row][seat];
+
+                String colorCode = (seatStatus == 0) ? ANSI_GREEN : ANSI_RED;
+                System.out.print(colorCode + seatStatus + " " + "\u001B[0m");
             }
+    
             System.out.println();
         }
     }
+    
 
     public int[] findBestAvailable(int hallNumber, int numSeats) {
         int updatedHallNumber = hallNumber - 1;
@@ -120,13 +133,48 @@ public class App {
         }
     }
 
-    public static void main(String[] args) {
+     public static void main(String[] args) {
         App cinema = new App();
-        cinema.bookSeats(1, 5, new int[] { 1, 2, 3 });
-        cinema.printSeatingArrangement(1);
-        cinema.checkAvailability(1, 18);
-        cinema.cancelBooking(1, 5, new int[] { 1, 2 ,3});
-        cinema.autoBook(1, 3);
-        cinema.printSeatingArrangement(1);
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter hall number, row, and seat to book:");
+        int hallNumber = scanner.nextInt();
+        int row = scanner.nextInt();
+        String[] seatToBookInput = scanner.next().split(",");
+        int[] seatToBook = new int[seatToBookInput.length];
+        for (int i = 0; i < seatToBookInput.length; i++) {
+            seatToBook[i] = Integer.parseInt(seatToBookInput[i]);
+        }
+        cinema.bookSeats(hallNumber, row, seatToBook);
+
+        System.out.println("Enter hall number to print seating arrangement:");
+        hallNumber = scanner.nextInt();
+        cinema.printSeatingArrangement(hallNumber);
+
+        System.out.println("Enter hall number and number of seats to check availability:");
+        hallNumber = scanner.nextInt();
+        int numSeats = scanner.nextInt();
+        cinema.checkAvailability(hallNumber, numSeats);
+
+        System.out.println("Enter hall number, row, and seats to cancel booking:");
+        hallNumber = scanner.nextInt();
+        row = scanner.nextInt();
+        String[] seatsToCancelInput = scanner.next().split(",");
+        int[] seatsToCancel = new int[seatsToCancelInput.length];
+        for (int i = 0; i < seatsToCancelInput.length; i++) {
+            seatsToCancel[i] = Integer.parseInt(seatsToCancelInput[i]);
+        }
+        cinema.cancelBooking(hallNumber, row, seatsToCancel);
+
+        System.out.println("Enter hall number and number of seats to auto book:");
+        hallNumber = scanner.nextInt();
+        numSeats = scanner.nextInt();
+        cinema.autoBook(hallNumber, numSeats);
+
+        System.out.println("Enter hall number to print seating arrangement AFTER actions:");
+        hallNumber = scanner.nextInt();
+        cinema.printSeatingArrangement(hallNumber);
+
+        scanner.close();
     }
 }
