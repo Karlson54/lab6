@@ -72,27 +72,39 @@ public class App {
     }
 
     public void printSeatingArrangement(int hallNumber) {
-
-        String ANSI_RED = "\u001B[31m";
-        String ANSI_GREEN = "\u001B[32m";
+        String RED = "\u001B[31m";
+        String GREEN = "\u001B[32m";
+        String RESET = "\u001B[0m";
+        String YELLOW_BACKGROUND = "\u001B[43m";
 
         int updatedHallNumber = hallNumber - 1;
         System.out.println("Seating arrangement in hall " + hallNumber + ":");
-    
+
+        System.out.print("     ");
+        for (int seat = 1; seat <= seats[updatedHallNumber][0].length; seat++) {
+            System.out.printf("%2d ", seat);
+        }
+        System.out.println();
+
         for (int row = 0; row < seats[updatedHallNumber].length; row++) {
-            System.out.print("Row " + (row + 1) + ": ");
-    
+            System.out.printf("%2d |", (row + 1));
+
             for (int seat = 0; seat < seats[updatedHallNumber][row].length; seat++) {
                 int seatStatus = seats[updatedHallNumber][row][seat];
 
-                String colorCode = (seatStatus == 0) ? ANSI_GREEN : ANSI_RED;
-                System.out.print(colorCode + seatStatus + " " + "\u001B[0m");
+                String colorCode = (seatStatus == 0) ? GREEN : RED + YELLOW_BACKGROUND;
+                System.out.print(colorCode + "  " + seatStatus + RESET);
             }
-    
-            System.out.println();
+
+            System.out.println("  | " + (row + 1));
         }
+
+        System.out.print("     ");
+        for (int seat = 1; seat <= seats[updatedHallNumber][0].length; seat++) {
+            System.out.printf("%2d ", seat);
+        }
+        System.out.println();
     }
-    
 
     public int[] findBestAvailable(int hallNumber, int numSeats) {
         int updatedHallNumber = hallNumber - 1;
@@ -107,8 +119,9 @@ public class App {
                 }
                 if (available) {
                     System.out.println(
-                            numSeats + " best available seats found in row " + (row + 1) + " in hall " + hallNumber + ".");
-                    return new int[]{row + 1, seat + 1};
+                            numSeats + " best available seats found in row " + (row + 1) + " in hall " + hallNumber
+                                    + ".");
+                    return new int[] { row + 1, seat + 1 };
                 }
             }
         }
@@ -133,7 +146,7 @@ public class App {
         }
     }
 
-     public static void main(String[] args) {
+    public static void main(String[] args) {
         App cinema = new App();
         Scanner scanner = new Scanner(System.in);
 
